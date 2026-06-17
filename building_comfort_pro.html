@@ -1,0 +1,1971 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Building Comfort Expert System</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box
+        }
+        
+        :root {
+            --ink: #0a0f1e;
+            --ink2: #3d4354;
+            --ink3: #8891a8;
+            --gold: #b8922a;
+            --gold2: #d4a843;
+            --gold-bg: rgba(184, 146, 42, .08);
+            --gold-border: rgba(184, 146, 42, .22);
+            --blue: #1a4fa0;
+            --blue2: #2563c8;
+            --blue-bg: #eef3fc;
+            --green: #0f6e56;
+            --green-bg: #e1f5ee;
+            --green-b: #5DCAA5;
+            --red: #991b1b;
+            --red-bg: #fef2f2;
+            --red-b: #f09595;
+            --amber: #854F0B;
+            --amber-bg: #fef3c7;
+            --amber-b: #EF9F27;
+            --purple: #3C3489;
+            --purple-bg: #EEEDFE;
+            --surface: #ffffff;
+            --sf2: #f7f8fb;
+            --sf3: #f0f2f7;
+            --bdr: rgba(0, 0, 0, .08);
+            --bdr2: rgba(0, 0, 0, .13);
+            --r: 10px;
+            --rl: 16px;
+            --rxl: 22px;
+        }
+        
+        @media(prefers-color-scheme:dark) {
+            :root {
+                --ink: #edf0f7;
+                --ink2: #9aa5bd;
+                --ink3: #5c6680;
+                --gold: #d4a843;
+                --gold2: #b8922a;
+                --gold-bg: rgba(212, 168, 67, .09);
+                --gold-border: rgba(212, 168, 67, .25);
+                --blue: #4d90f0;
+                --blue2: #6ba8ff;
+                --blue-bg: #0f1e3d;
+                --green: #5DCAA5;
+                --green-bg: #04342c;
+                --green-b: #1D9E75;
+                --red: #f09595;
+                --red-bg: #3b0e0e;
+                --red-b: #E24B4A;
+                --amber: #EF9F27;
+                --amber-bg: #2d1a02;
+                --amber-b: #BA7517;
+                --purple: #AFA9EC;
+                --purple-bg: #26215C;
+                --surface: #111827;
+                --sf2: #1a2235;
+                --sf3: #232e44;
+                --bdr: rgba(255, 255, 255, .08);
+                --bdr2: rgba(255, 255, 255, .15);
+            }
+        }
+        
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(12px)
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+        
+        @keyframes slideR {
+            from {
+                opacity: 0;
+                transform: translateX(-8px)
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0)
+            }
+        }
+        
+        @keyframes pulse {
+            0%,
+            100% {
+                opacity: .5
+            }
+            50% {
+                opacity: 1
+            }
+        }
+        
+        @keyframes spin {
+            from {
+                transform: rotate(0)
+            }
+            to {
+                transform: rotate(360deg)
+            }
+        }
+        
+        @keyframes popIn {
+            from {
+                opacity: 0;
+                transform: scale(.85)
+            }
+            to {
+                opacity: 1;
+                transform: scale(1)
+            }
+        }
+        
+        @keyframes barFill {
+            from {
+                width: 0
+            }
+            to {
+                width: var(--w)
+            }
+        }
+        
+        .app {
+            border-radius: var(--rxl);
+            overflow: hidden;
+            border: 1px solid var(--bdr2);
+            animation: fadeUp .45s ease both;
+            max-width: 900px;
+            margin: 0 auto
+        }
+        
+        .hero {
+            background: var(--surface);
+            border-bottom: 1px solid var(--bdr);
+            padding: 26px 28px 0;
+            position: relative;
+            overflow: hidden
+        }
+        
+        .hero-ring {
+            position: absolute;
+            right: -50px;
+            top: -70px;
+            width: 240px;
+            height: 240px;
+            border-radius: 50%;
+            border: 40px solid var(--gold-bg);
+            pointer-events: none
+        }
+        
+        .hero-ring2 {
+            position: absolute;
+            right: 80px;
+            top: 10px;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 16px solid rgba(26, 79, 160, .06);
+            pointer-events: none
+        }
+        
+        .eyebrow {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+            animation: fadeUp .35s .1s both
+        }
+        
+        .pulse-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--gold);
+            animation: pulse 2.2s infinite
+        }
+        
+        .eyebrow-lbl {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: .08em;
+            color: var(--gold);
+            text-transform: uppercase
+        }
+        
+        .hero-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: 27px;
+            font-weight: 400;
+            color: var(--ink);
+            line-height: 1.2;
+            margin-bottom: 5px;
+            animation: fadeUp .35s .18s both
+        }
+        
+        .hero-sub {
+            font-size: 12px;
+            color: var(--ink3);
+            margin-bottom: 20px;
+            animation: fadeUp .35s .25s both
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 2px;
+            animation: fadeUp .35s .32s both
+        }
+        
+        .tab {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 16px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            background: transparent;
+            color: var(--ink3);
+            border-radius: var(--r) var(--r) 0 0;
+            border: 1px solid transparent;
+            border-bottom: none;
+            transition: all .18s;
+            font-family: 'Inter', sans-serif;
+            position: relative;
+            top: 1px
+        }
+        
+        .tab i {
+            font-size: 15px
+        }
+        
+        .tab:hover {
+            color: var(--ink);
+            background: var(--sf2)
+        }
+        
+        .tab.active {
+            color: var(--blue);
+            background: var(--surface);
+            border-color: var(--bdr2)
+        }
+        
+        .tbadge {
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 20px;
+            background: var(--blue-bg);
+            color: var(--blue);
+            font-weight: 500
+        }
+        
+        .panel {
+            display: none;
+            padding: 22px 28px;
+            background: var(--surface);
+            overflow-x: hidden
+        }
+        
+        .panel.active {
+            display: block;
+            animation: fadeUp .3s ease both
+        }
+        
+        .g2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px
+        }
+        
+        .g3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px
+        }
+        
+        .g4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px
+        }
+        
+        .sec-head {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            margin-bottom: 14px
+        }
+        
+        .sec-ico {
+            width: 32px;
+            height: 32px;
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 17px;
+            flex-shrink: 0
+        }
+        
+        .ico-gold {
+            background: var(--gold-bg);
+            color: var(--gold)
+        }
+        
+        .ico-blue {
+            background: var(--blue-bg);
+            color: var(--blue)
+        }
+        
+        .ico-green {
+            background: var(--green-bg);
+            color: var(--green)
+        }
+        
+        .ico-purple {
+            background: var(--purple-bg);
+            color: var(--purple)
+        }
+        
+        .sec-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--ink)
+        }
+        
+        .sec-sub {
+            font-size: 11px;
+            color: var(--ink3)
+        }
+        
+        .fg {
+            margin-bottom: 12px
+        }
+        
+        .fg label {
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--ink3);
+            text-transform: uppercase;
+            letter-spacing: .05em;
+            display: block;
+            margin-bottom: 4px
+        }
+        
+        .fg select,
+        .fg input {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid var(--bdr2);
+            border-radius: var(--r);
+            background: var(--sf2);
+            color: var(--ink);
+            font-size: 12px;
+            font-family: 'Inter', sans-serif;
+            transition: border-color .15s, box-shadow .15s;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='11' viewBox='0 0 24 24' fill='none' stroke='%238891a8' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 9px center;
+            padding-right: 26px
+        }
+        
+        .fg input[type=number] {
+            background-image: none;
+            padding-right: 10px
+        }
+        
+        .fg select:focus,
+        .fg input:focus {
+            outline: none;
+            border-color: var(--blue);
+            box-shadow: 0 0 0 3px rgba(26, 79, 160, .1)
+        }
+        
+        .fg input[type=range] {
+            padding: 0;
+            height: 5px;
+            cursor: pointer;
+            background-image: none;
+            border: none;
+            border-radius: 0;
+            background: var(--sf3)
+        }
+        
+        .range-row {
+            display: flex;
+            align-items: center;
+            gap: 10px
+        }
+        
+        .range-val {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--ink);
+            min-width: 38px;
+            text-align: right
+        }
+        
+        .cblock {
+            background: var(--sf2);
+            border: 1px solid var(--bdr);
+            border-radius: var(--rl);
+            padding: 14px;
+            margin-bottom: 14px
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: var(--rl);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all .18s
+        }
+        
+        .btn-primary {
+            background: var(--ink);
+            color: #fff
+        }
+        
+        .btn-primary:hover {
+            background: var(--blue);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 18px rgba(26, 79, 160, .28)
+        }
+        
+        .btn-primary:active {
+            transform: translateY(0);
+            box-shadow: none
+        }
+        
+        .btn-secondary {
+            background: var(--sf2);
+            color: var(--ink2);
+            border: 1px solid var(--bdr2);
+            margin-top: 8px
+        }
+        
+        .btn-secondary:hover {
+            background: var(--sf3);
+            color: var(--ink)
+        }
+        
+        .btn i {
+            font-size: 17px
+        }
+        
+        .divider {
+            border: none;
+            border-top: 1px solid var(--bdr);
+            margin: 18px 0
+        }
+        
+        .result-wrap {
+            margin-top: 18px;
+            animation: fadeUp .38s ease both
+        }
+        
+        .stat-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-bottom: 14px
+        }
+        
+        .stat {
+            background: var(--sf2);
+            border-radius: var(--r);
+            padding: 11px 12px;
+            text-align: center;
+            animation: popIn .4s ease both
+        }
+        
+        .stat-lbl {
+            font-size: 10px;
+            color: var(--ink3);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: .04em;
+            margin-bottom: 3px
+        }
+        
+        .stat-val {
+            font-size: 18px;
+            font-weight: 700
+        }
+        
+        .c-good {
+            color: var(--green)
+        }
+        
+        .c-mid {
+            color: var(--amber)
+        }
+        
+        .c-bad {
+            color: var(--red)
+        }
+        
+        .c-blue {
+            color: var(--blue)
+        }
+        
+        .status-banner {
+            border-radius: var(--rl);
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            margin-bottom: 14px;
+            border: 1px solid
+        }
+        
+        .sb-great {
+            background: var(--green-bg);
+            border-color: var(--green-b)
+        }
+        
+        .sb-ok {
+            background: var(--amber-bg);
+            border-color: var(--amber-b)
+        }
+        
+        .sb-bad {
+            background: var(--red-bg);
+            border-color: var(--red-b)
+        }
+        
+        .sb-ico {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+            animation: popIn .5s ease both
+        }
+        
+        .sb-great .sb-ico {
+            background: rgba(15, 110, 86, .14);
+            color: var(--green)
+        }
+        
+        .sb-ok .sb-ico {
+            background: rgba(133, 79, 11, .14);
+            color: var(--amber)
+        }
+        
+        .sb-bad .sb-ico {
+            background: rgba(153, 27, 27, .14);
+            color: var(--red)
+        }
+        
+        .sb-title {
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 2px
+        }
+        
+        .sb-sub {
+            font-size: 11px;
+            color: var(--ink2)
+        }
+        
+        .dim-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 14px
+        }
+        
+        .dim {
+            background: var(--surface);
+            border: 1px solid var(--bdr);
+            border-radius: var(--rl);
+            padding: 13px;
+            animation: fadeUp .4s ease both
+        }
+        
+        .dim-lbl {
+            font-size: 10px;
+            color: var(--ink3);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: .04em;
+            margin-bottom: 5px
+        }
+        
+        .dim-score {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 2px
+        }
+        
+        .dim-name {
+            font-size: 11px;
+            color: var(--ink3)
+        }
+        
+        .gauge-tr {
+            height: 5px;
+            background: var(--sf3);
+            border-radius: 3px;
+            margin-top: 8px;
+            overflow: hidden
+        }
+        
+        .gauge-fi {
+            height: 100%;
+            border-radius: 3px;
+            width: 0;
+            transition: width .9s cubic-bezier(.22, .68, 0, 1.2)
+        }
+        
+        .reko-wrap {
+            background: var(--sf2);
+            border: 1px solid var(--bdr);
+            border-radius: var(--rl);
+            padding: 13px 14px
+        }
+        
+        .reko-hd {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--ink3);
+            text-transform: uppercase;
+            letter-spacing: .05em;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px
+        }
+        
+        .reko-it {
+            display: flex;
+            align-items: flex-start;
+            gap: 9px;
+            padding: 7px 0;
+            border-bottom: 1px solid var(--bdr);
+            animation: slideR .4s ease both
+        }
+        
+        .reko-it:last-child {
+            border-bottom: none;
+            padding-bottom: 0
+        }
+        
+        .reko-ic {
+            width: 26px;
+            height: 26px;
+            border-radius: 8px;
+            background: var(--blue-bg);
+            color: var(--blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            flex-shrink: 0;
+            margin-top: 1px
+        }
+        
+        .reko-tx {
+            font-size: 11px;
+            color: var(--ink2);
+            line-height: 1.6
+        }
+        
+        .radar-wrap {
+            position: relative;
+            width: 100%;
+            height: 200px;
+            margin-bottom: 14px
+        }
+        
+        .priority-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 14px
+        }
+        
+        .prio-it {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--sf2);
+            border-radius: var(--r);
+            padding: 9px 12px;
+            border: 1px solid var(--bdr);
+            animation: slideR .4s ease both
+        }
+        
+        .prio-rank {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 700;
+            flex-shrink: 0
+        }
+        
+        .rank-1 {
+            background: #fef3c7;
+            color: #854F0B
+        }
+        
+        .rank-2 {
+            background: #fee2e2;
+            color: #991b1b
+        }
+        
+        .rank-3 {
+            background: #e1f5ee;
+            color: #0f6e56
+        }
+        
+        .prio-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--ink);
+            flex: 1
+        }
+        
+        .prio-badge {
+            font-size: 10px;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-weight: 500
+        }
+        
+        .pb-high {
+            background: var(--red-bg);
+            color: var(--red)
+        }
+        
+        .pb-mid {
+            background: var(--amber-bg);
+            color: var(--amber)
+        }
+        
+        .pb-low {
+            background: var(--green-bg);
+            color: var(--green)
+        }
+        
+        .cert-box {
+            border: 1px solid var(--gold-border);
+            background: var(--gold-bg);
+            border-radius: var(--rl);
+            padding: 14px 16px;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 13px
+        }
+        
+        .cert-seal {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 2px solid var(--gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: var(--gold);
+            flex-shrink: 0
+        }
+        
+        .cert-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--gold);
+            margin-bottom: 2px
+        }
+        
+        .cert-sub {
+            font-size: 11px;
+            color: var(--ink2)
+        }
+        
+        .snap-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 14px
+        }
+        
+        .snap {
+            border: 1px solid var(--bdr);
+            border-radius: var(--r);
+            padding: 10px 12px;
+            background: var(--sf2)
+        }
+        
+        .snap-label {
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: .04em;
+            color: var(--ink3);
+            margin-bottom: 3px
+        }
+        
+        .snap-value {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--ink)
+        }
+        
+        .print-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            width: 100%;
+            padding: 10px;
+            border: 1px dashed var(--gold-border);
+            border-radius: var(--r);
+            background: var(--gold-bg);
+            color: var(--gold);
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all .18s;
+            font-family: 'Inter', sans-serif;
+            margin-top: 8px
+        }
+        
+        .print-btn:hover {
+            background: rgba(184, 146, 42, .15)
+        }
+        
+        .ottv-hero {
+            text-align: center;
+            padding: 22px;
+            border-radius: var(--rxl);
+            background: var(--sf2);
+            border: 1px solid var(--bdr);
+            margin-bottom: 14px;
+            animation: popIn .45s ease both
+        }
+        
+        .ottv-num {
+            font-family: 'DM Serif Display', serif;
+            font-size: 50px;
+            font-weight: 400;
+            line-height: 1;
+            margin-bottom: 6px
+        }
+        
+        .ottv-unit {
+            font-size: 16px;
+            color: var(--ink3);
+            margin-left: 4px;
+            font-family: 'Inter', sans-serif
+        }
+        
+        .ottv-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600
+        }
+        
+        .bp {
+            background: var(--green-bg);
+            color: var(--green)
+        }
+        
+        .bf {
+            background: var(--red-bg);
+            color: var(--red)
+        }
+        
+        .bd-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 14px
+        }
+        
+        .bd {
+            background: var(--sf2);
+            border: 1px solid var(--bdr);
+            border-radius: var(--rl);
+            padding: 11px 13px;
+            animation: fadeUp .4s ease both
+        }
+        
+        .bd-n {
+            font-size: 10px;
+            color: var(--ink3);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: .03em;
+            margin-bottom: 4px
+        }
+        
+        .bd-v {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 1px
+        }
+        
+        .bd-p {
+            font-size: 10px;
+            color: var(--ink3)
+        }
+        
+        .bd-bar {
+            height: 3px;
+            background: var(--sf3);
+            border-radius: 2px;
+            margin-top: 7px;
+            overflow: hidden
+        }
+        
+        .bd-fill {
+            height: 100%;
+            border-radius: 2px;
+            transition: width 1s cubic-bezier(.22, .68, 0, 1.2)
+        }
+        
+        .sim-wrap {
+            background: var(--sf2);
+            border: 1px solid var(--bdr);
+            border-radius: var(--rl);
+            padding: 14px;
+            margin-bottom: 14px
+        }
+        
+        .sim-hd {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--ink3);
+            text-transform: uppercase;
+            letter-spacing: .05em;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px
+        }
+        
+        .sim-result {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+            margin-top: 12px
+        }
+        
+        .sim-card {
+            text-align: center;
+            padding: 10px;
+            background: var(--surface);
+            border-radius: var(--r);
+            border: 1px solid var(--bdr)
+        }
+        
+        .sim-num {
+            font-size: 16px;
+            font-weight: 700
+        }
+        
+        .sim-lbl {
+            font-size: 10px;
+            color: var(--ink3);
+            margin-top: 2px
+        }
+        
+        .chart-w {
+            position: relative;
+            width: 100%;
+            height: 210px;
+            min-height: 160px
+        }
+        
+        .leg {
+            display: flex;
+            gap: 14px;
+            font-size: 11px;
+            color: var(--ink3);
+            margin-bottom: 8px;
+            flex-wrap: wrap
+        }
+        
+        .leg-sq {
+            width: 9px;
+            height: 9px;
+            border-radius: 2px;
+            flex-shrink: 0;
+            margin-top: 2px
+        }
+        
+        .info-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            color: var(--ink2);
+            background: var(--sf2);
+            border: 1px solid var(--bdr);
+            border-radius: var(--r);
+            padding: 6px 10px;
+            margin-bottom: 14px
+        }
+        
+        .info-pill i {
+            color: var(--gold);
+            font-size: 14px
+        }
+        /* ===== MOBILE RESPONSIVE ===== */
+        
+        @media(max-width:600px) {
+            body {
+                padding: 0
+            }
+            .app {
+                border-radius: 0;
+                border-left: none;
+                border-right: none;
+                max-width: 100%
+            }
+            .hero {
+                padding: 18px 16px 0
+            }
+            .hero-title {
+                font-size: 20px
+            }
+            .hero-sub {
+                font-size: 11px
+            }
+            .tabs {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+                gap: 0
+            }
+            .tabs::-webkit-scrollbar {
+                display: none
+            }
+            .tab {
+                padding: 10px 12px;
+                font-size: 11px;
+                white-space: nowrap;
+                flex-shrink: 0
+            }
+            .tab .tbadge {
+                display: none
+            }
+            .panel {
+                padding: 14px 16px
+            }
+            .g2 {
+                grid-template-columns: 1fr
+            }
+            .g3 {
+                grid-template-columns: 1fr 1fr
+            }
+            .g4 {
+                grid-template-columns: 1fr 1fr
+            }
+            .stat-row {
+                grid-template-columns: 1fr 1fr
+            }
+            .dim-row {
+                grid-template-columns: 1fr
+            }
+            .bd-row {
+                grid-template-columns: 1fr
+            }
+            .sim-result {
+                grid-template-columns: 1fr
+            }
+            .snap-grid {
+                grid-template-columns: 1fr
+            }
+            .ottv-num {
+                font-size: 38px
+            }
+            .chart-w {
+                height: 170px
+            }
+            .radar-wrap {
+                height: 170px
+            }
+            .fg select,
+            .fg input {
+                font-size: 16px
+            }
+            .btn {
+                font-size: 13px;
+                padding: 13px
+            }
+            .cblock {
+                padding: 12px
+            }
+            .info-pill {
+                font-size: 10px;
+                flex-wrap: wrap
+            }
+            .sec-head {
+                margin-bottom: 10px
+            }
+            .priority-list .prio-it {
+                flex-wrap: wrap;
+                gap: 6px
+            }
+            .prio-badge {
+                margin-left: auto
+            }
+            .sim-wrap {
+                padding: 12px
+            }
+        }
+        
+        @media(max-width:380px) {
+            .hero-title {
+                font-size: 17px
+            }
+            .g3 {
+                grid-template-columns: 1fr
+            }
+            .ottv-num {
+                font-size: 30px
+            }
+        }
+        
+        @media(hover:none) {
+            .btn:hover {
+                transform: none;
+                box-shadow: none
+            }
+            .tab:hover {
+                background: transparent;
+                color: var(--ink3)
+            }
+            .btn:active {
+                opacity: .85;
+                transform: translateY(1px)
+            }
+            .tab.active {
+                color: var(--blue)
+            }
+        }
+        
+        .fg select,
+        .fg input {
+            min-height: 40px
+        }
+        
+        input[type=range] {
+            height: 28px;
+            touch-action: pan-x
+        }
+    </style>
+</head>
+
+<body>
+    <div style="max-width:900px;margin:0 auto">
+        <div class="app">
+            <div class="hero">
+                <div class="hero-ring"></div>
+                <div class="hero-ring2"></div>
+                <div style="position:relative;z-index:1">
+                    <div class="eyebrow">
+                        <div class="pulse-dot"></div><span class="eyebrow-lbl">Sistem Pakar Arsitektur · SNI Certified</span></div>
+                    <div class="hero-title">Building Comfort Expert System</div>
+                    <div class="hero-sub">Analisis kenyamanan termal · akustik · energi · OTTV · simulasi & laporan profesional</div>
+                    <div class="tabs">
+                        <button class="tab active" onclick="SW('pakar',this)"><i class="ti ti-clipboard-check" aria-hidden="true"></i>Sistem Pakar<span class="tbadge">Diagnosa</span></button>
+                        <button class="tab" onclick="SW('ottv',this)"><i class="ti ti-temperature-sun" aria-hidden="true"></i>Kalkulator OTTV<span class="tbadge">SNI</span></button>
+                        <button class="tab" onclick="SW('sim',this)"><i class="ti ti-adjustments" aria-hidden="true"></i>Simulasi<span class="tbadge">Baru</span></button>
+                        <button class="tab" onclick="SW('ref',this)"><i class="ti ti-book" aria-hidden="true"></i>Referensi</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ======== SISTEM PAKAR ======== -->
+            <div id="pakar" class="panel active">
+                <div class="g2">
+                    <div>
+                        <div class="sec-head">
+                            <div class="sec-ico ico-gold"><i class="ti ti-sun" aria-hidden="true"></i></div>
+                            <div>
+                                <div class="sec-title">Kinerja Termal</div>
+                                <div class="sec-sub">Orientasi, atap & ventilasi</div>
+                            </div>
+                        </div>
+                        <div class="fg"><label>Orientasi dominan</label><select id="ori"><option value="U">Utara / Selatan — optimal</option><option value="T">Timur — sedang</option><option value="B">Barat — kurang baik</option></select></div>
+                        <div class="fg"><label>Penutup atap</label><select id="atap"><option value="G">Genteng tanah liat</option><option value="B">Beton / pelat</option><option value="S">Seng / metal</option></select></div>
+                        <div class="fg"><label>Ventilasi silang</label><select id="ven"><option value="A">Ada & efektif</option><option value="P">Ada, tapi terbatas</option><option value="T">Tidak ada</option></select></div>
+                        <div class="fg"><label>Tinggi plafon</label><select id="plf"><option value="H">&gt; 4 m</option><option value="M">3—4 m</option><option value="L">&lt; 3 m</option></select></div>
+                        <div class="fg"><label>Shading device</label><select id="shd"><option value="E">Egg crate (efektif)</option><option value="V">Vertical fin</option><option value="K">Kanopi / overhang</option><option value="T">Tidak ada</option></select></div>
+                        <div class="fg"><label>Kondisi ruang siang hari</label><select id="pns"><option value="N">Nyaman (≤ 28°C)</option><option value="P">Agak panas (28–31°C)</option><option value="H">Sangat panas (&gt;31°C)</option></select></div>
+                        <div class="fg"><label>Material dinding utama</label><select id="wall"><option value="B">Bata merah / hebel</option><option value="K">Kaca / curtain wall</option><option value="C">Beton ekspos</option><option value="W">Kayu / bambu</option></select></div>
+                    </div>
+                    <div>
+                        <div class="sec-head">
+                            <div class="sec-ico ico-blue"><i class="ti ti-volume" aria-hidden="true"></i></div>
+                            <div>
+                                <div class="sec-title">Akustik & Kebisingan</div>
+                                <div class="sec-sub">Lokasi & material selubung</div>
+                            </div>
+                        </div>
+                        <div class="fg"><label>Lokasi bangunan</label><select id="jln"><option value="L">Jalan lokal / perumahan</option><option value="K">Jalan kolektor</option><option value="A">Jalan arteri utama</option><option value="I">Kawasan industri</option></select></div>
+                        <div class="fg"><label>Gangguan suara</label><select id="sra"><option value="N">Tidak mengganggu</option><option value="S">Sedikit mengganggu</option><option value="G">Sangat mengganggu</option></select></div>
+                        <div class="fg"><label>Jenis kaca jendela</label><select id="kca"><option value="LO">Low-E double glass</option><option value="D">Double glass biasa</option><option value="S">Single glass</option></select></div>
+                        <div class="sec-head" style="margin-top:15px">
+                            <div class="sec-ico ico-green"><i class="ti ti-bolt" aria-hidden="true"></i></div>
+                            <div>
+                                <div class="sec-title">Efisiensi Energi</div>
+                                <div class="sec-sub">Pencahayaan & pendingin</div>
+                            </div>
+                        </div>
+                        <div class="fg"><label>Pencahayaan dominan</label><select id="lmp"><option value="N">Dominan alami</option><option value="C">Campuran</option><option value="A">Dominan buatan</option></select></div>
+                        <div class="fg"><label>Jenis lampu</label><select id="jlp"><option value="L">LED</option><option value="C">CFL / hemat energi</option><option value="F">Fluorescent T8/T5</option><option value="I">Incandescent</option></select></div>
+                        <div class="fg"><label>Sistem pendingin (AC)</label><select id="jac"><option value="I">Inverter</option><option value="N">Non-inverter</option><option value="T">Tidak ada AC</option></select></div>
+                        <div class="fg"><label>Sistem pencahayaan cerdas</label><select id="smt"><option value="Y">Ada (sensor/timer)</option><option value="N">Tidak ada</option></select></div>
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="analisis()"><i class="ti ti-analyze" aria-hidden="true"></i>Analisis Kenyamanan Bangunan</button>
+
+                <div class="result-wrap" id="hslPakar" style="display:none">
+                    <div class="divider"></div>
+                    <div id="sBanner"></div>
+                    <div class="stat-row" id="statRow"></div>
+                    <div class="g2" style="gap:14px;margin-bottom:14px">
+                        <div>
+                            <div class="dim-row" id="dimRow"></div>
+                            <div style="margin-bottom:10px" id="gaugeWrap"></div>
+                            <div id="certBox"></div>
+                        </div>
+                        <div>
+                            <div class="radar-wrap"><canvas id="radarChart" role="img" aria-label="Radar chart kinerja bangunan">Radar chart performa termal, akustik, energi.</canvas></div>
+                        </div>
+                    </div>
+                    <div class="priority-list" id="prioList"></div>
+                    <div class="reko-wrap">
+                        <div class="reko-hd"><i class="ti ti-list-check" aria-hidden="true"></i>Rekomendasi teknis</div>
+                        <div id="rekoList"></div>
+                    </div>
+                    <button class="btn btn-secondary" onclick="cetakLaporan()"><i class="ti ti-printer" aria-hidden="true"></i>Cetak / Simpan Laporan PDF</button>
+                </div>
+            </div>
+
+            <!-- ======== OTTV ======== -->
+            <div id="ottv" class="panel">
+                <div class="info-pill"><i class="ti ti-info-circle" aria-hidden="true"></i>SNI 03-6389: OTTV = (1−WWR)·U<sub>w</sub>·TDEQ + WWR·U<sub>f</sub>·ΔT + WWR·SC·SF ≤ 35 W/m²</div>
+                <div class="g2">
+                    <div>
+                        <div class="cblock">
+                            <div class="sec-head" style="margin-bottom:11px">
+                                <div class="sec-ico ico-gold"><i class="ti ti-layout-2" aria-hidden="true"></i></div>
+                                <div>
+                                    <div class="sec-title">Dinding Opak</div>
+                                    <div class="sec-sub">Komponen non-transparan</div>
+                                </div>
+                            </div>
+                            <div class="fg"><label>WWR — Window to Wall Ratio (%)</label>
+                                <div class="range-row"><input type="range" id="wwr" min="10" max="90" value="40" step="1" oninput="document.getElementById('wwrV').textContent=this.value+'%';hitungOTTV()"><span class="range-val" id="wwrV">40%</span></div>
+                            </div>
+                            <div class="fg"><label>U<sub>w</sub> — Transmitansi dinding (W/m²K)</label><input type="number" id="uw" value="2.8" step="0.01" oninput="hitungOTTV()"></div>
+                            <div class="fg"><label>TDEQ — Perbedaan suhu ekuivalen (°C)</label><input type="number" id="tdeq" value="10" step="0.1" oninput="hitungOTTV()"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="cblock">
+                            <div class="sec-head" style="margin-bottom:11px">
+                                <div class="sec-ico ico-blue"><i class="ti ti-sun-high" aria-hidden="true"></i></div>
+                                <div>
+                                    <div class="sec-title">Kaca & Radiasi Surya</div>
+                                    <div class="sec-sub">Komponen transparan</div>
+                                </div>
+                            </div>
+                            <div class="fg"><label>U<sub>f</sub> — Transmitansi kaca (W/m²K)</label><input type="number" id="uf" value="5.7" step="0.01" oninput="hitungOTTV()"></div>
+                            <div class="fg"><label>ΔT — Beda suhu luar-dalam (°C)</label><input type="number" id="dt" value="5" step="0.1" oninput="hitungOTTV()"></div>
+                            <div class="fg"><label>SC — Shading coefficient</label>
+                                <div class="range-row"><input type="range" id="sc" min="0" max="1" value="0.7" step="0.05" oninput="document.getElementById('scV').textContent=this.value;hitungOTTV()"><span class="range-val" id="scV">0.7</span></div>
+                            </div>
+                            <div class="fg"><label>SF — Solar factor (W/m²)</label><input type="number" id="sf" value="155" step="1" oninput="hitungOTTV()"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="result-wrap" id="hslOTTV">
+                    <div class="ottv-hero">
+                        <div class="ottv-num" id="ottvNum">—<span class="ottv-unit">W/m²</span></div>
+                        <div id="ottvBadge" style="margin-bottom:8px"></div>
+                        <div id="ottvSNIdiff" style="font-size:11px;color:var(--ink3)"></div>
+                    </div>
+                    <div class="bd-row" id="bdRow"></div>
+                    <div class="reko-wrap" id="rekoOTTV" style="margin-bottom:14px"></div>
+                    <div class="g2" style="gap:12px">
+                        <div>
+                            <div class="sec-head" style="margin-bottom:8px">
+                                <div class="sec-ico ico-gold"><i class="ti ti-chart-bar" aria-hidden="true"></i></div>
+                                <div>
+                                    <div class="sec-title">Grafik OTTV vs WWR</div>
+                                </div>
+                            </div>
+                            <div class="leg" id="chLeg"></div>
+                            <div class="chart-w"><canvas id="grafik" role="img" aria-label="Grafik OTTV terhadap WWR dengan batas SNI">Grafik OTTV vs WWR.</canvas></div>
+                        </div>
+                        <div>
+                            <div class="sec-head" style="margin-bottom:8px">
+                                <div class="sec-ico ico-blue"><i class="ti ti-chart-donut" aria-hidden="true"></i></div>
+                                <div>
+                                    <div class="sec-title">Kontribusi komponen</div>
+                                </div>
+                            </div>
+                            <div class="chart-w"><canvas id="pieChart" role="img" aria-label="Pie chart kontribusi komponen OTTV">Pie chart komponen OTTV.</canvas></div>
+                        </div>
+                    </div>
+                    <button class="btn btn-secondary" onclick="cetakOTTV()"><i class="ti ti-printer" aria-hidden="true"></i>Cetak Laporan OTTV</button>
+                </div>
+            </div>
+
+            <!-- ======== SIMULASI ======== -->
+            <div id="sim" class="panel">
+                <div class="sec-head">
+                    <div class="sec-ico ico-purple"><i class="ti ti-adjustments" aria-hidden="true"></i></div>
+                    <div>
+                        <div class="sec-title">Simulasi Skenario Perbaikan</div>
+                        <div class="sec-sub">Bandingkan kondisi eksisting vs target perbaikan secara real-time</div>
+                    </div>
+                </div>
+                <div class="g2">
+                    <div>
+                        <div class="cblock">
+                            <div style="font-size:11px;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:12px">Kondisi eksisting</div>
+                            <div class="fg"><label>Orientasi</label><select id="s_ori" onchange="simulasi()"><option value="B">Barat</option><option value="T">Timur</option><option value="U" selected>Utara/Selatan</option></select></div>
+                            <div class="fg"><label>Shading</label><select id="s_shd" onchange="simulasi()"><option value="T">Tidak ada</option><option value="K">Kanopi</option><option value="E" selected>Egg crate</option></select></div>
+                            <div class="fg"><label>Ventilasi</label><select id="s_ven" onchange="simulasi()"><option value="T">Tidak ada</option><option value="P">Terbatas</option><option value="A" selected>Efektif</option></select></div>
+                            <div class="fg"><label>Jenis AC</label><select id="s_ac" onchange="simulasi()"><option value="N">Non-inverter</option><option value="I" selected>Inverter</option><option value="T">Tidak ada</option></select></div>
+                            <div class="fg"><label>Jenis lampu</label><select id="s_lmp" onchange="simulasi()"><option value="I">Incandescent</option><option value="F">Fluorescent</option><option value="C">CFL</option><option value="L" selected>LED</option></select></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="cblock">
+                            <div style="font-size:11px;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:12px">Skenario target</div>
+                            <div class="fg"><label>Orientasi target</label><select id="t_ori" onchange="simulasi()"><option value="B">Barat</option><option value="T">Timur</option><option value="U" selected>Utara/Selatan</option></select></div>
+                            <div class="fg"><label>Shading target</label><select id="t_shd" onchange="simulasi()"><option value="T">Tidak ada</option><option value="K">Kanopi</option><option value="E" selected>Egg crate</option></select></div>
+                            <div class="fg"><label>Ventilasi target</label><select id="t_ven" onchange="simulasi()"><option value="T">Tidak ada</option><option value="P">Terbatas</option><option value="A" selected>Efektif</option></select></div>
+                            <div class="fg"><label>AC target</label><select id="t_ac" onchange="simulasi()"><option value="N">Non-inverter</option><option value="I" selected>Inverter</option><option value="T">Tidak ada</option></select></div>
+                            <div class="fg"><label>Lampu target</label><select id="t_lmp" onchange="simulasi()"><option value="I">Incandescent</option><option value="F">Fluorescent</option><option value="C">CFL</option><option value="L" selected>LED</option></select></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="sim-wrap" id="simResult">
+                    <div class="sim-hd"><i class="ti ti-chart-arrows-vertical" aria-hidden="true"></i>Perbandingan hasil simulasi</div>
+                    <div class="chart-w" style="height:180px"><canvas id="simChart" role="img" aria-label="Bar chart perbandingan skor eksisting vs target">Perbandingan skor.</canvas></div>
+                    <div class="sim-result" id="simCards"></div>
+                </div>
+            </div>
+
+            <!-- ======== REFERENSI ======== -->
+            <div id="ref" class="panel">
+                <div class="g2">
+                    <div>
+                        <div class="sec-head">
+                            <div class="sec-ico ico-gold"><i class="ti ti-certificate" aria-hidden="true"></i></div>
+                            <div>
+                                <div class="sec-title">Standar & Regulasi</div>
+                                <div class="sec-sub">Acuan desain di Indonesia</div>
+                            </div>
+                        </div>
+                        <div class="priority-list">
+                            <div class="prio-it">
+                                <div class="prio-rank rank-1">1</div>
+                                <div>
+                                    <div class="prio-title">SNI 03-6389-2011</div>
+                                    <div style="font-size:11px;color:var(--ink3)">Konservasi energi selubung bangunan — OTTV ≤ 35 W/m²</div>
+                                </div>
+                            </div>
+                            <div class="prio-it">
+                                <div class="prio-rank rank-2">2</div>
+                                <div>
+                                    <div class="prio-title">SNI 03-6575-2001</div>
+                                    <div style="font-size:11px;color:var(--ink3)">Tata cara perancangan sistem pencahayaan buatan</div>
+                                </div>
+                            </div>
+                            <div class="prio-it">
+                                <div class="prio-rank rank-3">3</div>
+                                <div>
+                                    <div class="prio-title">SNI 03-6572-2001</div>
+                                    <div style="font-size:11px;color:var(--ink3)">Tata cara perancangan sistem ventilasi dan AC</div>
+                                </div>
+                            </div>
+                            <div class="prio-it">
+                                <div class="prio-rank rank-1">4</div>
+                                <div>
+                                    <div class="prio-title">Permen PUPR No.2/2015</div>
+                                    <div style="font-size:11px;color:var(--ink3)">Bangunan gedung hijau — kenyamanan termal & energi</div>
+                                </div>
+                            </div>
+                            <div class="prio-it">
+                                <div class="prio-rank rank-2">5</div>
+                                <div>
+                                    <div class="prio-title">ASHRAE 55 / ISO 7730</div>
+                                    <div style="font-size:11px;color:var(--ink3)">Kenyamanan termal: zona nyaman 23–26°C, RH 40–60%</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="sec-head">
+                            <div class="sec-ico ico-blue"><i class="ti ti-bulb" aria-hidden="true"></i></div>
+                            <div>
+                                <div class="sec-title">Nilai Acuan Material</div>
+                                <div class="sec-sub">Parameter teknis tipikal</div>
+                            </div>
+                        </div>
+                        <div class="cblock">
+                            <div style="font-size:11px;font-weight:600;color:var(--ink3);margin-bottom:10px">Transmitansi Termal Dinding (U<sub>w</sub>)</div>
+                            <div class="snap-grid">
+                                <div class="snap">
+                                    <div class="snap-label">Bata merah</div>
+                                    <div class="snap-value">2.1–2.8 W/m²K</div>
+                                </div>
+                                <div class="snap">
+                                    <div class="snap-label">Hebel / AAC</div>
+                                    <div class="snap-value">0.8–1.2 W/m²K</div>
+                                </div>
+                                <div class="snap">
+                                    <div class="snap-label">Beton 15 cm</div>
+                                    <div class="snap-value">3.5–4.2 W/m²K</div>
+                                </div>
+                                <div class="snap">
+                                    <div class="snap-label">Dinding sandwich</div>
+                                    <div class="snap-value">0.4–0.9 W/m²K</div>
+                                </div>
+                            </div>
+                            <div style="font-size:11px;font-weight:600;color:var(--ink3);margin:12px 0 10px">Transmitansi Termal Kaca (U<sub>f</sub>)</div>
+                            <div class="snap-grid">
+                                <div class="snap">
+                                    <div class="snap-label">Single clear</div>
+                                    <div class="snap-value">5.7–6.0 W/m²K</div>
+                                </div>
+                                <div class="snap">
+                                    <div class="snap-label">Double glass</div>
+                                    <div class="snap-value">2.6–3.2 W/m²K</div>
+                                </div>
+                                <div class="snap">
+                                    <div class="snap-label">Low-E double</div>
+                                    <div class="snap-value">1.4–2.0 W/m²K</div>
+                                </div>
+                                <div class="snap">
+                                    <div class="snap-label">Triple glass</div>
+                                    <div class="snap-value">0.8–1.4 W/m²K</div>
+                                </div>
+                            </div>
+                            <div style="font-size:11px;font-weight:600;color:var(--ink3);margin:12px 0 10px">Shading Coefficient (SC)</div>
+                            <div class="snap-grid">
+                                <div class="snap">
+                                    <div class="snap-label">Kaca clear</div>
+                                    <div class="snap-value">0.86–0.95</div>
+                                </div>
+                                <div class="snap">
+                                    <div class="snap-label">Kaca tinted</div>
+                                    <div class="snap-value">0.40–0.70</div>
+                                </div>
+                                <div class="snap">
+                                    <div class="snap-label">Low-E reflektif</div>
+                                    <div class="snap-value">0.20–0.40</div>
+                                </div>
+                                <div class="snap">
+                                    <div class="snap-label">+Egg crate</div>
+                                    <div class="snap-value">0.10–0.25</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="cert-box">
+                    <div class="cert-seal"><i class="ti ti-award" aria-hidden="true"></i></div>
+                    <div>
+                        <div class="cert-title">Sertifikasi Bangunan Hijau Indonesia (GBCI)</div>
+                        <div class="cert-sub">Sistem ini mengacu pada Greenship GBCI dan SNI untuk evaluasi komprehensif. Hubungi konsultan bersertifikat untuk laporan resmi.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+        <script>
+            const G = id => document.getElementById(id);
+            const V = id => G(id).value;
+            const isDark = matchMedia('(prefers-color-scheme:dark)').matches;
+            const tC = isDark ? '#5c6680' : '#8891a8';
+            const gC = isDark ? 'rgba(255,255,255,.05)' : 'rgba(0,0,0,.04)';
+
+            function SW(id, el) {
+                document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                G(id).classList.add('active');
+                el.classList.add('active');
+            }
+
+            function gc(p) {
+                return p <= 40 ? '#0F6E56' : p <= 70 ? '#BA7517' : '#A32D2D'
+            }
+
+            function sc(s) {
+                return s === 'Baik' || s === 'Efisien' ? 'c-good' : s === 'Cukup' || s === 'Sedang' ? 'c-mid' : 'c-bad'
+            }
+
+            function animate(el, cb) {
+                el.style.animation = 'none';
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        el.style.animation = '';
+                        cb && cb()
+                    })
+                });
+            }
+
+            let radarChart, lineChart, pieChart, simChart;
+
+            function analisis() {
+                let t = 0,
+                    b = 0,
+                    e = 0;
+                if (V('ori') === 'B') t += 3;
+                else if (V('ori') === 'T') t += 1;
+                if (V('atap') === 'S') t += 3;
+                else if (V('atap') === 'B') t += 1;
+                if (V('ven') === 'T') t += 3;
+                else if (V('ven') === 'P') t += 1;
+                if (V('plf') === 'L') t += 2;
+                else if (V('plf') === 'M') t += 1;
+                if (V('shd') === 'T') t += 2;
+                else if (V('shd') === 'K') t += 1;
+                if (V('pns') === 'H') t += 3;
+                else if (V('pns') === 'P') t += 1;
+                if (V('wall') === 'K') t += 2;
+                if (V('jln') === 'I') b += 4;
+                else if (V('jln') === 'A') b += 3;
+                else if (V('jln') === 'K') b += 1;
+                if (V('sra') === 'G') b += 3;
+                else if (V('sra') === 'S') b += 1;
+                if (V('kca') === 'S') b += 3;
+                else if (V('kca') === 'D') b += 1;
+                if (V('lmp') === 'A') e += 3;
+                else if (V('lmp') === 'C') e += 1;
+                if (V('jlp') === 'I') e += 3;
+                else if (V('jlp') === 'F') e += 2;
+                else if (V('jlp') === 'C') e += 1;
+                if (V('jac') === 'N') e += 2;
+                if (V('smt') === 'N') e += 1;
+
+                const MT = 17,
+                    MB = 10,
+                    ME = 9;
+                const termal = t <= 4 ? 'Baik' : t <= 9 ? 'Cukup' : 'Buruk';
+                const bising = b <= 2 ? 'Baik' : b <= 5 ? 'Sedang' : 'Buruk';
+                const energi = e <= 2 ? 'Efisien' : e <= 5 ? 'Sedang' : 'Boros';
+                const tPct = Math.min(100, Math.round(t / MT * 100));
+                const bPct = Math.min(100, Math.round(b / MB * 100));
+                const ePct = Math.min(100, Math.round(e / ME * 100));
+                const tScore = 100 - tPct,
+                    bScore = 100 - bPct,
+                    eScore = 100 - ePct;
+                const overall = Math.round((tScore + bScore + eScore) / 3);
+                const buruk = [termal === 'Buruk', bising === 'Buruk', energi === 'Boros'].filter(Boolean).length;
+
+                let cls, icon, title, sub;
+                if (buruk === 0 && tScore >= 70 && bScore >= 70 && eScore >= 70) {
+                    cls = 'sb-great';
+                    icon = 'ti-circle-check';
+                    title = 'Sangat Nyaman';
+                    sub = 'Semua aspek kenyamanan dalam kondisi prima.'
+                } else if (buruk <= 1) {
+                    cls = 'sb-ok';
+                    icon = 'ti-alert-triangle';
+                    title = 'Cukup Nyaman';
+                    sub = 'Beberapa aspek perlu perbaikan untuk hasil optimal.'
+                } else {
+                    cls = 'sb-bad';
+                    icon = 'ti-circle-x';
+                    title = 'Tidak Nyaman';
+                    sub = 'Intervensi segera diperlukan pada beberapa aspek.'
+                }
+
+                G('sBanner').innerHTML = `<div class="status-banner ${cls}"><div class="sb-ico"><i class="ti ${icon}" aria-hidden="true"></i></div><div><div class="sb-title">${title}</div><div class="sb-sub">Termal ${tScore} · Akustik ${bScore} · Energi ${eScore} — ${sub}</div></div></div>`;
+
+                G('statRow').innerHTML = [{
+                    l: 'Skor Overall',
+                    v: overall + '%',
+                    c: 'c-blue'
+                }, {
+                    l: 'Kinerja Termal',
+                    v: tScore + '%',
+                    c: sc(termal)
+                }, {
+                    l: 'Kinerja Akustik',
+                    v: bScore + '%',
+                    c: sc(bising)
+                }, {
+                    l: 'Efisiensi Energi',
+                    v: eScore + '%',
+                    c: sc(energi)
+                }].map((s, i) => `<div class="stat" style="animation-delay:${i*.06}s"><div class="stat-lbl">${s.l}</div><div class="stat-val ${s.c}">${s.v}</div></div>`).join('');
+
+                G('dimRow').innerHTML = [{
+                    l: 'Termal',
+                    s: tScore,
+                    n: termal
+                }, {
+                    l: 'Akustik',
+                    s: bScore,
+                    n: bising
+                }, {
+                    l: 'Energi',
+                    s: eScore,
+                    n: energi
+                }].map((d, i) => `<div class="dim" style="animation-delay:${i*.07}s"><div class="dim-lbl">${d.l}</div><div class="dim-score ${sc(d.n)}">${d.s}</div><div class="dim-name">${d.n}</div><div class="gauge-tr"><div class="gauge-fi" id="gf${i}" style="background:${gc(100-d.s)}"></div></div></div>`).join('');
+
+                // gaugeWrap cleared intentionally — gauges are inside dimRow
+                setTimeout(() => {
+                    [{
+                        s: tPct,
+                        i: 0
+                    }, {
+                        s: bPct,
+                        i: 1
+                    }, {
+                        s: ePct,
+                        i: 2
+                    }].forEach(x => {
+                        const f = G('gf' + x.i);
+                        if (f) {
+                            f.style.transition = 'width .9s cubic-bezier(.22,.68,0,1.2)';
+                            f.style.width = x.s + '%';
+                        }
+                    });
+                }, 80);
+
+                const certLevel = overall >= 85 ? 'Platinum' : overall >= 70 ? 'Gold' : overall >= 55 ? 'Silver' : 'Tidak memenuhi';
+                const certColor = overall >= 85 ? 'var(--purple)' : overall >= 70 ? 'var(--gold)' : overall >= 55 ? '#888' : 'var(--red)';
+                G('certBox').innerHTML = overall >= 55 ? `<div class="cert-box" style="margin-bottom:0"><div class="cert-seal" style="border-color:${certColor};color:${certColor}"><i class="ti ti-award" aria-hidden="true"></i></div><div><div class="cert-title" style="color:${certColor}">Proyeksi Greenship: ${certLevel}</div><div class="cert-sub">Berdasarkan skor overall ${overall}%. Untuk sertifikasi resmi hubungi GBCI.</div></div></div>` : '';
+
+                const priorities = [];
+                if (tScore < 60) priorities.push({
+                    rank: 1,
+                    t: 'Perbaikan termal mendesak',
+                    d: 'Orientasi, atap & shading device perlu dioptimalkan segera.',
+                    cl: 'pb-high'
+                });
+                if (bScore < 60) priorities.push({
+                    rank: 2,
+                    t: 'Isolasi akustik perlu ditingkatkan',
+                    d: 'Material kaca dan barier kebisingan perlu diperkuat.',
+                    cl: 'pb-high'
+                });
+                if (eScore < 60) priorities.push({
+                    rank: 3,
+                    t: 'Inefisiensi energi tinggi',
+                    d: 'Upgrade AC ke inverter dan lampu ke LED adalah prioritas.',
+                    cl: 'pb-mid'
+                });
+                if (tScore >= 60 && tScore < 80) priorities.push({
+                    rank: priorities.length + 1,
+                    t: 'Optimasi kenyamanan termal',
+                    d: 'Tambahkan ventilasi silang untuk sirkulasi udara lebih baik.',
+                    cl: 'pb-mid'
+                });
+                if (priorities.length === 0) priorities.push({
+                    rank: 1,
+                    t: 'Pertahankan standar saat ini',
+                    d: 'Bangunan sudah memenuhi kriteria kenyamanan yang baik.',
+                    cl: 'pb-low'
+                });
+                G('prioList').innerHTML = priorities.map((p, i) => `<div class="prio-it" style="animation-delay:${i*.06}s"><div class="prio-rank rank-${Math.min(p.rank,3)}">${p.rank}</div><div style="flex:1"><div class="prio-title">${p.t}</div><div style="font-size:11px;color:var(--ink3);margin-top:2px">${p.d}</div></div><span class="prio-badge ${p.cl}">${p.cl==='pb-high'?'Prioritas':p.cl==='pb-mid'?'Sedang':'Baik'}</span></div>`).join('');
+
+                const rekos = [];
+                if (V('ori') === 'B') rekos.push({
+                    i: 'ti-compass',
+                    t: 'Rotasi fasad ke orientasi Utara–Selatan untuk kurangi beban panas Barat.'
+                });
+                if (V('shd') === 'T') rekos.push({
+                    i: 'ti-sun',
+                    t: 'Pasang egg crate — efektif 40–60% reduksi radiasi fasad Barat/Timur.'
+                });
+                if (V('ven') === 'T') rekos.push({
+                    i: 'ti-wind',
+                    t: 'Buat bukaan silang pada sisi berlawanan untuk ventilasi alami.'
+                });
+                if (V('atap') === 'S') rekos.push({
+                    i: 'ti-home-2',
+                    t: 'Tambahkan insulasi mineral wool di bawah atap seng untuk kurangi konduksi panas.'
+                });
+                if (V('kca') === 'S') rekos.push({
+                    i: 'ti-window',
+                    t: 'Upgrade ke double glass — reduksi kebisingan 8–12 dB lebih baik dari single glass.'
+                });
+                if (V('jlp') !== 'L') rekos.push({
+                    i: 'ti-bulb',
+                    t: 'Ganti semua ke LED — hemat 50–80% energi, umur pakai 25.000 jam.'
+                });
+                if (V('jac') === 'N') rekos.push({
+                    i: 'ti-air-conditioning',
+                    t: 'Upgrade AC ke inverter — efisiensi 30–50% lebih baik dari non-inverter.'
+                });
+                if (V('smt') === 'N') rekos.push({
+                    i: 'ti-device-gamepad-2',
+                    t: 'Pasang sensor gerak/timer untuk pencahayaan otomatis — hemat 20–30% energi.'
+                });
+                if (rekos.length === 0) rekos.push({
+                    i: 'ti-star',
+                    t: 'Spesifikasi sudah optimal. Pertahankan jadwal perawatan berkala.'
+                });
+                G('rekoList').innerHTML = rekos.map((r, i) => `<div class="reko-it" style="animation-delay:${i*.05}s"><div class="reko-ic"><i class="ti ${r.i}" aria-hidden="true"></i></div><div class="reko-tx">${r.t}</div></div>`).join('');
+
+                if (radarChart) radarChart.destroy();
+                radarChart = new Chart(G('radarChart'), {
+                    type: 'radar',
+                    data: {
+                        labels: ['Termal', 'Akustik', 'Energi', 'Ventilasi', 'Pencahayaan', 'Selubung'],
+                        datasets: [{
+                            label: 'Skor bangunan',
+                            data: [tScore, bScore, eScore,
+                                V('ven') === 'A' ? 90 : V('ven') === 'P' ? 55 : 20,
+                                V('lmp') === 'N' ? 90 : V('lmp') === 'C' ? 60 : 30,
+                                V('kca') === 'LO' ? 90 : V('kca') === 'D' ? 65 : 35
+                            ],
+                            borderColor: '#1a4fa0',
+                            backgroundColor: 'rgba(26,79,160,.12)',
+                            borderWidth: 2,
+                            pointBackgroundColor: '#1a4fa0',
+                            pointRadius: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            r: {
+                                min: 0,
+                                max: 100,
+                                ticks: {
+                                    display: false,
+                                    stepSize: 25
+                                },
+                                pointLabels: {
+                                    font: {
+                                        size: 11,
+                                        family: 'Inter'
+                                    },
+                                    color: tC
+                                },
+                                grid: {
+                                    color: gC
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        }
+                    }
+                });
+
+                const hw = G('hslPakar');
+                hw.style.display = 'block';
+                hw.style.animation = 'none';
+                requestAnimationFrame(() => {
+                    hw.style.animation = 'fadeUp .35s ease both'
+                });
+            }
+
+            let lineChartInst, pieChartInst;
+
+            function hitungOTTV() {
+                const WWR = parseFloat(V('wwr')) / 100;
+                const Uw = parseFloat(V('uw')),
+                    TDEQ = parseFloat(V('tdeq'));
+                const Uf = parseFloat(V('uf')),
+                    DT = parseFloat(V('dt'));
+                const SC = parseFloat(V('sc')),
+                    SF = parseFloat(V('sf'));
+                const kW = (1 - WWR) * Uw * TDEQ,
+                    kK = WWR * Uf * DT,
+                    kS = WWR * SC * SF;
+                const ottv = kW + kK + kS;
+                const ok = ottv <= 35;
+
+                G('ottvNum').innerHTML = ottv.toFixed(1) + '<span class="ottv-unit">W/m²</span>';
+                G('ottvBadge').innerHTML = `<span class="ottv-badge ${ok?'bp':'bf'}"><i class="ti ${ok?'ti-circle-check':'ti-circle-x'}" aria-hidden="true"></i>${ok?'Memenuhi SNI 03-6389':'Belum memenuhi SNI 03-6389'}</span>`;
+                const diff = (35 - ottv).toFixed(2);
+                G('ottvSNIdiff').innerHTML = ok ? `Selisih ${diff} W/m² di bawah batas SNI` : `Melebihi batas ${Math.abs(diff)} W/m² dari ketentuan SNI`;
+
+                const pct = val => ottv === 0 ? 0 : Math.round(val / ottv * 100);
+                const cols = ['#1a4fa0', '#0F6E56', '#D85A30'];
+                G('bdRow').innerHTML = [{
+                    n: 'Konduksi dinding',
+                    v: kW,
+                    c: cols[0]
+                }, {
+                    n: 'Konduksi kaca',
+                    v: kK,
+                    c: cols[1]
+                }, {
+                    n: 'Radiasi solar',
+                    v: kS,
+                    c: cols[2]
+                }].map((d, i) => `
+    <div class="bd" style="animation-delay:${i*.07}s">
+      <div class="bd-n">${d.n}</div>
+      <div class="bd-v">${d.v.toFixed(2)}</div>
+      <div class="bd-p">${pct(d.v)}% dari OTTV</div>
+      <div class="bd-bar"><div class="bd-fill" style="width:0;background:${d.c}" data-w="${pct(d.v)}"></div></div>
+    </div>`).join('');
+                setTimeout(() => {
+                    document.querySelectorAll('.bd-fill').forEach(b => {
+                        b.style.transition = 'width 1s cubic-bezier(.22,.68,0,1.2)';
+                        b.style.width = b.dataset.w + '%';
+                    });
+                }, 80);
+
+                const items = [];
+                if (!ok) {
+                    if (WWR > 0.4) items.push({
+                        i: 'ti-layout-2',
+                        t: `Kurangi WWR dari ${Math.round(WWR*100)}% ke ≤ 40%.`
+                    });
+                    if (SC > 0.4) items.push({
+                        i: 'ti-sun-off',
+                        t: `Turunkan SC ke ≤ 0.4 dengan kaca Low-E.`
+                    });
+                    if (Uf > 3) items.push({
+                        i: 'ti-window',
+                        t: 'Gunakan double glass Low-E (Uf ≤ 2.0 W/m²K).'
+                    });
+                    items.push({
+                        i: 'ti-sun',
+                        t: 'Tambahkan external shading device untuk kurangi SC efektif.'
+                    });
+                } else {
+                    items.push({
+                        i: 'ti-circle-check',
+                        t: `Selisih ${diff} W/m² dari batas. Pertahankan spesifikasi saat ini.`
+                    });
+                }
+                G('rekoOTTV').innerHTML = `<div class="reko-hd"><i class="ti ti-list-check" aria-hidden="true"></i>${ok?'Evaluasi':'Langkah perbaikan'}</div>${items.map((r,i)=>`<div class="reko-it" style="animation-delay:${i*.06}s"><div class="reko-ic"><i class="ti ${r.i}" aria-hidden="true"></i></div><div class="reko-tx">${r.t}</div></div>`).join('')}`;
+
+  const lineC=isDark?'#4d90f0':'#1a4fa0';
+  const sniC=isDark?'#f09595':'#991b1b';
+  G('chLeg').innerHTML=`<div style="display:flex;align-items:center;gap:5px"><div class="leg-sq" style="background:${lineC}"></div><span>OTTV aktual</span></div><div style="display:flex;align-items:center;gap:5px"><div class="leg-sq" style="background:${sniC};opacity:.6"></div><span>Batas SNI 35 W/m²</span></div>`;
+  const lbls=[],dO=[],dS=[];
+  for(let i=10;i<=90;i+=5){const w=i/100,val=(1-w)*Uw*TDEQ+w*Uf*DT+w*SC*SF;lbls.push(i+'%');dO.push(Number(val.toFixed(2)));dS.push(35);}
+  if(lineChartInst) lineChartInst.destroy();
+  lineChartInst=new Chart(G('grafik'),{type:'line',data:{labels:lbls,datasets:[{label:'OTTV',data:dO,borderColor:lineC,backgroundColor:lineC+'1a',borderWidth:2,pointRadius:2,fill:true,tension:.35},{label:'SNI 35',data:dS,borderColor:sniC,borderDash:[5,4],borderWidth:1.5,pointRadius:0,fill:false}]},options:{responsive:true,maintainAspectRatio:false,scales:{x:{ticks:{color:tC,font:{size:10}},grid:{color:gC}},y:{ticks:{color:tC,font:{size:10},callback:v=>v+' W'},grid:{color:gC}}},plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>ctx.dataset.label+': '+ctx.raw.toFixed(1)+' W/m²'}}}}});
+
+  if(pieChartInst) pieChartInst.destroy();
+  pieChartInst=new Chart(G('pieChart'),{type:'doughnut',data:{labels:['Dinding','Kaca konduksi','Radiasi solar'],datasets:[{data:[kW.toFixed(2),kK.toFixed(2),kS.toFixed(2)],backgroundColor:['#1a4fa0','#0F6E56','#D85A30'],borderWidth:0,hoverOffset:6}]},options:{responsive:true,maintainAspectRatio:false,cutout:'62%',plugins:{legend:{display:true,position:'bottom',labels:{color:tC,font:{size:11},padding:12,boxWidth:10,boxHeight:10}},tooltip:{callbacks:{label:ctx=>`${ctx.label}: ${ctx.raw} W/m² (${pct(parseFloat(ctx.raw))}%)`}}}}});
+}
+
+function calcScore(ori,shd,ven,ac,lmp){
+  let t=0,e=0;
+  if(ori==='B')t+=3;else if(ori==='T')t+=1;
+  if(shd==='T')t+=2;else if(shd==='K')t+=1;
+  if(ven==='T')t+=3;else if(ven==='P')t+=1;
+  if(ac==='N')e+=2;
+  if(lmp==='I')e+=3;else if(lmp==='F')e+=2;else if(lmp==='C')e+=1;
+  const MT=6,ME=5;
+  return{t:Math.round((1-t/MT)*100),e:Math.round((1-e/ME)*100),total:Math.round((1-t/MT)*100*0.5+(1-e/ME)*100*0.5)};
+}
+
+function simulasi(){
+  const ex=calcScore(V('s_ori'),V('s_shd'),V('s_ven'),V('s_ac'),V('s_lmp'));
+  const tg=calcScore(V('t_ori'),V('t_shd'),V('t_ven'),V('t_ac'),V('t_lmp'));
+  const delta=tg.total-ex.total;
+  G('simCards').innerHTML=`
+    <div class="sim-card"><div class="sim-num" style="color:var(--ink3)">${ex.total}%</div><div class="sim-lbl">Skor eksisting</div></div>
+    <div class="sim-card"><div class="sim-num" style="color:var(--blue)">${tg.total}%</div><div class="sim-lbl">Skor target</div></div>
+    <div class="sim-card"><div class="sim-num" style="color:${delta>=0?'var(--green)':'var(--red)'}">${delta>=0?'+':''}${delta}%</div><div class="sim-lbl">Peningkatan</div></div>`;
+  if(simChart) simChart.destroy();
+  simChart=new Chart(G('simChart'),{type:'bar',data:{labels:['Kinerja Termal','Efisiensi Energi','Skor Total'],datasets:[{label:'Eksisting',data:[ex.t,ex.e,ex.total],backgroundColor:isDark?'rgba(92,102,128,.6)':'rgba(136,135,128,.4)',borderRadius:6,borderSkipped:false},{label:'Target',data:[tg.t,tg.e,tg.total],backgroundColor:isDark?'rgba(77,144,240,.7)':'rgba(26,79,160,.65)',borderRadius:6,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,scales:{x:{ticks:{color:tC,font:{size:11}},grid:{color:gC}},y:{min:0,max:100,ticks:{color:tC,font:{size:10},callback:v=>v+'%'},grid:{color:gC}}},plugins:{legend:{display:true,position:'top',labels:{color:tC,font:{size:11},boxWidth:10,boxHeight:10,padding:10}}}}});
+}
+
+function cetakLaporan(){
+  var w=window.open('','_blank');
+  var css='body{font-family:Arial,sans-serif;padding:40px;color:#222;max-width:700px;margin:auto}h1{font-size:22px;border-bottom:2px solid #1a4fa0;padding-bottom:8px;margin-bottom:18px}h2{font-size:15px;margin:18px 0 8px;color:#1a4fa0}.row{display:flex;justify-content:space-between;border-bottom:1px solid #eee;padding:6px 0;font-size:13px}.label{color:#666}.note{font-size:11px;color:#999;margin-top:24px;border-top:1px solid #eee;padding-top:12px}';
+  var html='<html><head><title>Laporan Kenyamanan Bangunan</title><style>'+css+'</style></head><body>';
+  html+='<h1>Laporan Kenyamanan Bangunan</h1>';
+  html+='<p style="font-size:12px;color:#666">Digenerate: '+new Date().toLocaleString('id-ID')+'</p>';
+  html+='<h2>Parameter Input</h2>';
+  html+='<div class="row"><span class="label">Orientasi dominan</span><span>'+V('ori')+'</span></div>';
+  html+='<div class="row"><span class="label">Atap</span><span>'+V('atap')+'</span></div>';
+  html+='<div class="row"><span class="label">Ventilasi</span><span>'+V('ven')+'</span></div>';
+  html+='<div class="row"><span class="label">Shading device</span><span>'+V('shd')+'</span></div>';
+  html+='<div class="row"><span class="label">Jenis AC</span><span>'+V('jac')+'</span></div>';
+  html+='<div class="row"><span class="label">Jenis lampu</span><span>'+V('jlp')+'</span></div>';
+  html+='<h2>Hasil Analisis</h2>';
+  var sTxt=(G("sBanner")?G("sBanner").innerText:"")+" "+(G("prioList")?G("prioList").innerText:"");
+  html+='<div style="font-size:13px;color:#444">'+sTxt+'</div>';
+  html+='<div class="note">Laporan ini dihasilkan oleh Building Comfort Expert System. Untuk sertifikasi resmi, hubungi konsultan arsitektur bersertifikat GBCI.</div>';
+  html+='</body></html>';
+  w.document.write(html);w.document.close();w.print();
+}
+
+function cetakOTTV(){
+  var w=window.open('','_blank');
+  var ottv=G('ottvNum').innerText;
+  var css='body{font-family:Arial,sans-serif;padding:40px;color:#222;max-width:700px;margin:auto}h1{font-size:22px;border-bottom:2px solid #1a4fa0;padding-bottom:8px}.row{display:flex;justify-content:space-between;border-bottom:1px solid #eee;padding:6px 0;font-size:13px}.label{color:#666}h2{font-size:15px;color:#1a4fa0;margin:16px 0 8px}.note{font-size:11px;color:#999;margin-top:24px;border-top:1px solid #eee;padding-top:12px}';
+  var html='<html><head><title>Laporan OTTV</title><style>'+css+'</style></head><body>';
+  html+='<h1>Laporan Kalkulator OTTV</h1>';
+  html+='<p style="font-size:12px;color:#666">Berdasarkan SNI 03-6389-2011 - '+new Date().toLocaleString('id-ID')+'</p>';
+  html+='<h2>Parameter</h2>';
+  html+='<div class="row"><span class="label">WWR</span><span>'+V('wwr')+'%</span></div>';
+  html+='<div class="row"><span class="label">Uw</span><span>'+V('uw')+' W/m²K</span></div>';
+  html+='<div class="row"><span class="label">TDEQ</span><span>'+V('tdeq')+' °C</span></div>';
+  html+='<div class="row"><span class="label">Uf</span><span>'+V('uf')+' W/m²K</span></div>';
+  html+='<div class="row"><span class="label">ΔT</span><span>'+V('dt')+' °C</span></div>';
+  html+='<div class="row"><span class="label">SC</span><span>'+V('sc')+'</span></div>';
+  html+='<div class="row"><span class="label">SF</span><span>'+V('sf')+' W/m²</span></div>';
+  html+='<h2>Hasil</h2>';
+  html+='<div style="font-size:28px;font-weight:bold;color:#1a4fa0;margin:12px 0">OTTV = '+ottv+'</div>';
+  var bTxt=(G("ottvBadge")?G("ottvBadge").innerText:"")+" "+(G("ottvSNIdiff")?G("ottvSNIdiff").innerText:"");
+  html+='<div style="font-size:13px">'+bTxt+'</div>';
+  html+='<div class="note">Dokumen ini dihasilkan oleh Building Comfort Expert System. Acuan: SNI 03-6389-2011.</div>';
+  html+='</body></html>';
+  w.document.write(html);w.document.close();w.print();
+}
+window.addEventListener("DOMContentLoaded",function(){
+  hitungOTTV();
+  simulasi();
+});
+        </script>
+    </div>
+    </div>
+</body>
+
+</html>
